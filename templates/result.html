@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>BASGRA - WEB SERVICE</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+  <style>
+
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+}
+
+    #topbar {
+      background: #fff;
+      padding: 10px;
+    }
+
+    .action-button {
+      font-size: 16px;
+      background-color: transparent;
+      border: 1px solid #D3D3D3;
+      color: #6e6e6e;
+      height: 32px;
+      width: 32px;
+      text-align: center;
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-button:hover,
+    .action-button:focus {
+      background: #0079c1;
+      color: #e4e4e4;
+    }
+    .active {
+      background: #0079c1;
+      color: #e4e4e4;
+    }
+
+    .centered{
+    margin: 0 auto;
+    }
+
+    img { 
+  width: 100%; 
+  }
+
+  pagination-centered {
+  text-align: center;
+}
+
+  </style>
+
+
+</head>
+
+<body>
+    <br>
+    <blockquote class="blockquote text-center">
+      <h2 class="mb-0">This Figure shows the re-growth dynamics of Kikuyo grass </h2>
+      <footer class="blockquote-footer"><a>It is assumed grazing activity every 35 days</a></footer>
+    </blockquote>
+
+    <div class="container">
+    <div class="image-parent">
+            <img id="my_image" src='' class="img-fluid" >
+    </div>
+    </div>
+
+  <br>
+  <blockquote class="blockquote text-center">
+    <p class="mb-0">REFERENCES</p>
+    <footer class="blockquote-footer">Hjelkrem, A. G. R., Höglind, M., van Oijen, M., Schellberg, J., Gaiser, T., and Ewert, F. (2017). Sensitivity analysis and Bayesian calibration for testing robustness of the BASGRA model in
+      different environments. Ecological modelling, 359, 80-91.</footer>
+    <footer class="blockquote-footer">Höglind, M., Persson, T., and Van Oijen, M. (2017). Extending the BASGRA model for
+      timothy grass with functions to simulate impacts of climate change and sward management on yield and nutritive
+      value. FACCE MACSUR Reports, 10(S), 08.</footer>
+    <footer class="blockquote-footer">Höglind, M., Van Oijen, M., Cameron, D., and Persson, T. (2016). Process-based
+      simulation of growth and overwintering of grassland using the BASGRA model. Ecological Modelling, 335, 1-15.</footer>
+
+  </blockquote>
+  
+<p class="remove"> {{ dm}} </p>
+
+<script>
+$("#my_image").attr("src","../tpm/out.png");
+var dm_ = document.getElementsByTagName('p')[1].innerHTML;
+$( ".remove" ).remove();
+console.log(dm_)
+</script>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>BASGRA - WEB SERVICE</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous">
+
+  <style>
+
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+}
+
+    #topbar {
+      background: #fff;
+      padding: 10px;
+    }
+
+    .action-button {
+      font-size: 16px;
+      background-color: transparent;
+      border: 1px solid #D3D3D3;
+      color: #6e6e6e;
+      height: 32px;
+      width: 32px;
+      text-align: center;
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-button:hover,
+    .action-button:focus {
+      background: #0079c1;
+      color: #e4e4e4;
+    }
+    .active {
+      background: #0079c1;
+      color: #e4e4e4;
+    }
+
+    .centered{
+    margin: 0 auto;
+}
+
+#test{
+        display:none
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.10/"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script>
+
+    var area_ = 0
+
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/WebMap",
+      "esri/widgets/DistanceMeasurement2D",
+      "esri/widgets/AreaMeasurement2D"
+    ], function (Map,
+      MapView,
+      WebMap,
+      DistanceMeasurement2D,
+      AreaMeasurement2D) {
+
+        var activeWidget = null;
+
+        var map = new Map({
+          basemap: "hybrid"
+        });
+        var view = new MapView({
+          container: "viewDiv",  // Reference to the scene div created in step 5
+          map: map,  // Reference to the map object created before the scene
+          zoom: 18,  // Sets zoom level based on level of detail (LOD)
+          center: [-75.544684, 6.445520]  // Sets center point of view using longitude,latitude
+        });
+
+        // add the toolbar for the measurement widgets
+        view.ui.add("topbar", "top-right");
+
+        document.getElementById("distanceButton").addEventListener("click",
+          function () {
+            setActiveWidget(null);
+            if (!this.classList.contains('active')) {
+              setActiveWidget('distance');
+            } else {
+              setActiveButton(null);
+            }
+          });
+
+        document.getElementById("areaButton").addEventListener("click",
+          function () {
+            setActiveWidget(null);
+            if (!this.classList.contains('active')) {
+              setActiveWidget('area');
+            } else {
+              setActiveButton(null);
+            }
+          });
+
+        function setActiveWidget(type) {
+          switch (type) {
+            case "distance":
+              activeWidget = new DistanceMeasurement2D({
+                view: view
+              });
+
+              // skip the initial 'new measurement' button
+              activeWidget.viewModel.newMeasurement();
+
+              view.ui.add(activeWidget, "top-right");
+              setActiveButton(document.getElementById('distanceButton'));
+              break;
+            case "area":
+              activeWidget = new AreaMeasurement2D({
+                view: view,
+                unit: "square-meters"
+              });
+
+              // skip the initial 'new measurement' button
+              activeWidget.viewModel.newMeasurement();
+
+              view.ui.add(activeWidget, "top-right");
+              setActiveButton(document.getElementById('areaButton'));
+
+
+
+              // Measurement labels can be accessed from this property
+              activeWidget.watch("viewModel.measurementLabel", function (label) {
+                /*console.log(
+                   "Area: ", label.area,
+                   //"Perimeter: ", label.perimeter
+                );*/
+
+                if (label != null) {
+                  area_ = label.area
+                  document.getElementById("myArea").value = area_;
+                }
+
+
+              });
+
+              break;
+            case null:
+              if (activeWidget) {
+                view.ui.remove(activeWidget);
+                activeWidget.destroy();
+                activeWidget = null;
+              }
+              break;
+          }
+        }
+
+        function setActiveButton(selectedButton) {
+          // focus the view to activate keyboard shortcuts for sketching
+          view.focus();
+          var elements = document.getElementsByClassName("active");
+          for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.remove("active");
+          }
+          if (selectedButton) {
+            selectedButton.classList.add("active");
+          }
+        }
+
+      });
+
+
+      $(document).ready(function () {
+       $('span').on('mouseenter', function () {
+           $('#test').show();
+           $(this).css({
+               "text-decoration": "underline"
+           });
+       }).on('mouseleave', function () {
+           $('#test').hide();
+           $(this).css({
+               "text-decoration": ''
+           });
+       });;
+   });
+
+
+  </script>
+
+</head>
+
+<body>
+  <br>
+  <blockquote class="blockquote text-center">
+    <p class="mb-0">This is a Web Service designed to estimate Kikuyo grass (Pennisetum cladestinum) growth using the BASGRA
+      model, which was developed jointly by Marcel van Oijen, Mats Höglind, David Cameron and Stig Morten Thorsen.</p>
+    <footer class="blockquote-footer">The BASGRA codes were obtained from <a href="https://github.com/davcam/BASGRA" class="text-decoration-none">GitHub</a></footer>
+  
+    <img id="test" src="../tpm/steps.png"/> <span style="color:blue">SEE HERE HOW TO USE THE SERVICE</span> 
+  
+  </blockquote>
+
+  <div id="viewDiv" style="max-width: 1000px; max-height: 600px; margin: auto;border: 3px solid #73AD21"></div>
+  <div id="topbar">
+    <button class="action-button esri-icon-minus" id="distanceButton" type="button" title="Measure distance between two or more points"></button>
+    <button class="action-button esri-icon-polygon" id="areaButton" type="button" title="Measure area"></button>
+  </div>
+  <br>
+
+  <div class="container">
+    <div class="centered text-center">
+      <form action="{{ url_for('result') }}" method="POST">
+        <input type="text" value="TOTAL AREA">
+        <input type="text" name="projectFilepath" value="1,0 m2" id="myArea">
+        <input type="submit">
+      </form>
+    </div>
+  </div>
+  <br>
+  <blockquote class="blockquote text-center">
+    <p class="mb-0">REFERENCES</p>
+    <footer class="blockquote-footer">Hjelkrem, A. G. R., Höglind, M., van Oijen, M., Schellberg, J., Gaiser, T., &
+      Ewert, F. (2017). Sensitivity analysis and Bayesian calibration for testing robustness of the BASGRA model in
+      different environments. Ecological modelling, 359, 80-91.</footer>
+    <footer class="blockquote-footer">Höglind, M., Persson, T., & Van Oijen, M. (2017). Extending the BASGRA model for
+      timothy grass with functions to simulate impacts of climate change and sward management on yield and nutritive
+      value. FACCE MACSUR Reports, 10(S), 08.</footer>
+    <footer class="blockquote-footer">Höglind, M., Van Oijen, M., Cameron, D., & Persson, T. (2016). Process-based
+      simulation of growth and overwintering of grassland using the BASGRA model. Ecological Modelling, 335, 1-15.</footer>
+
+  </blockquote>
+
+</body>
+
+</html>
